@@ -17,3 +17,6 @@ App.messages = App.cable.subscriptions.create "MessagesChannel",
 
   test: (data) ->
     @perform 'test', message: data
+
+  create: (data) ->
+    @perform 'create', message: data

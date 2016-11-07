@@ -8,7 +8,26 @@ class MessagesChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
+  def create(content)
+    @message = Message.new content: content['message']
+    @message.ip = 'noip'
+    if @message.save
+      ActionCable.server.broadcast('messages', action: 'append', data: render_message(@message))
+    else
+    end
+  end
+
   def test(data)
-    ActionCable.server.broadcast('messages', message: "Test: #{data}")
+    ActionCable.server.broadcast('messages', action: 'append', data: "Test: #{data}")
+  end
+
+
+  private
+
+  def render_message(message)
+    ApplicationController.render(
+      partial: 'messages/message',
+      locals: {message: message}
+    )
   end
 end
